@@ -1,0 +1,11 @@
+# IntelliFlow frontend on Netlify (Next.js App Router).
+# Backend (FastAPI/Postgres/Redis/Celery) must be hosted separately; set NEXT_PUBLIC_API_URL in Netlify env.
+
+[build]
+  command = "npm run build"
+  # Do not set `publish`; @netlify/plugin-nextjs wires Next output for you.
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# Optional: SPA-style fallback is handled by the Next plugin for App Router.

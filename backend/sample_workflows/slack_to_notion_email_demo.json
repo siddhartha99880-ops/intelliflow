@@ -1,0 +1,53 @@
+{
+  "name": "Slack -> Summary -> Notion Task -> Email Draft",
+  "description": "AI-assisted demo workflow",
+  "nodes": [
+    {
+      "id": "11111111-1111-1111-1111-111111111111",
+      "type": "trigger",
+      "label": "Slack trigger",
+      "position_x": 0,
+      "position_y": 0,
+      "data": { "source": "slack" }
+    },
+    {
+      "id": "22222222-2222-2222-2222-222222222222",
+      "type": "llm_agent",
+      "label": "Summarize message",
+      "position_x": 250,
+      "position_y": 0,
+      "data": {
+        "agent_kind": "summarizer",
+        "prompt": "Summarize the slack message and extract key bullets for follow-up. Return JSON."
+      }
+    },
+    {
+      "id": "33333333-3333-3333-3333-333333333333",
+      "type": "notion",
+      "label": "Create Notion task",
+      "position_x": 500,
+      "position_y": 0,
+      "data": {
+        "title": "Follow-up: {{summary}}",
+        "properties": { "Status": "To do", "Owner": "Demo" }
+      }
+    },
+    {
+      "id": "44444444-4444-4444-4444-444444444444",
+      "type": "email",
+      "label": "Draft email",
+      "position_x": 750,
+      "position_y": 0,
+      "data": {
+        "subject": "Re: {{summary}}",
+        "body_template": "Hi team,\\n\\nSummary: {{summary}}\\n\\nNext steps:\\n- {{extracted}}\\n\\nRegards,\\nIntelliFlow"
+      }
+    }
+  ],
+  "edges": [
+    { "id": null, "from_node_id": "11111111-1111-1111-1111-111111111111", "to_node_id": "22222222-2222-2222-2222-222222222222", "condition_key": null },
+    { "id": null, "from_node_id": "22222222-2222-2222-2222-222222222222", "to_node_id": "33333333-3333-3333-3333-333333333333", "condition_key": null },
+    { "id": null, "from_node_id": "33333333-3333-3333-3333-333333333333", "to_node_id": "44444444-4444-4444-4444-444444444444", "condition_key": null }
+  ]
+}
+
