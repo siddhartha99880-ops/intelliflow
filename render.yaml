@@ -1,0 +1,62 @@
+services:
+  # FastAPI API service
+  - type: web
+    name: intelliflow-api
+    env: docker
+    dockerfilePath: Dockerfile
+    dockerContext: backend
+    plan: free
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: intelliflow-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: intelliflow-redis
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ENVIRONMENT
+        value: production
+      - key: DEBUG
+        value: "false"
+      - key: SEED_DEMO_DATA
+        value: "1"
+      - key: BACKEND_CORS_ORIGINS
+        value: '["*"]' # In production, restrict to your frontend URL
+
+  # Celery worker service
+  - type: worker
+    name: intelliflow-worker
+    env: docker
+    dockerfilePath: Dockerfile
+    dockerContext: backend
+    plan: free
+    dockerCommand: celery -A app.workers.celery_app:celery worker --loglevel=INFO --concurrency=1
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: intelliflow-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: intelliflow-redis
+          property: connectionString
+      - key: SECRET_KEY
+        fromService:
+          type: web
+          name: intelliflow-api
+          property: SECRET_KEY
+
+  # Redis instance (internal use only)
+  - type: redis
+    name: intelliflow-redis
+    plan: free
+    ipAllowList: []
+
+databases:
+  - name: intelliflow-db
+    plan: free
