@@ -46,10 +46,7 @@ services:
           name: intelliflow-redis
           property: connectionString
       - key: SECRET_KEY
-        fromService:
-          type: web
-          name: intelliflow-api
-          property: SECRET_KEY
+        generateValue: true
 
   # Redis instance (internal use only)
   - type: redis
