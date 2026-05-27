@@ -9,7 +9,7 @@ export default function LoginPage() {
   const router = useRouter();
   const setToken = useAuthStore((s) => s.setToken);
 
-  const [email, setEmail] = useState("demo@intelliflow.local");
+  const [email, setEmail] = useState("demo@intelliflow.io");
   const [password, setPassword] = useState("demo-password");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

@@ -28,7 +28,7 @@ async def seed() -> None:
             await session.refresh(team)
 
         # User
-        email = "demo@intelliflow.local"
+        email = "demo@intelliflow.io"
         res = await session.execute(select(User).where(User.email == email))
         user = res.scalar_one_or_none()
         if not user:
