@@ -10,8 +10,10 @@ COPY requirements.txt /app/requirements.txt
 RUN pip install --upgrade pip && pip install -r /app/requirements.txt
 
 COPY app /app/app
+COPY start.sh /app/start.sh
+RUN chmod +x /app/start.sh
 
-# Railway sets PORT dynamically
+# Render/Railway sets PORT dynamically
 EXPOSE 8000
 
-CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
+CMD ["./start.sh"]

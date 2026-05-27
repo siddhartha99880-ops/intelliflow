@@ -32,8 +32,8 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 60 * 24
     jwt_algorithm: str = "HS256"
 
-    # Database (Railway injects DATABASE_URL when Postgres is linked)
-    database_url: AnyUrl | str = "postgresql+asyncpg://postgres:postgres@db:5432/intelliflow"
+    # Database
+    database_url: AnyUrl | str = "sqlite+aiosqlite:///./intelliflow.db"
 
     # Redis / Celery (Railway injects REDIS_URL when Redis is linked)
     redis_url: str = "redis://redis:6379/0"
@@ -85,10 +85,19 @@ class Settings(BaseSettings):
         return bool(v)
 
     def get_celery_broker(self) -> str:
-        return self.celery_broker_url or self.redis_url
+        if self.celery_broker_url:
+            return self.celery_broker_url
+        if "sqlite" in str(self.database_url) and self.redis_url == "redis://redis:6379/0":
+            return "sqla+sqlite:///./celerybroker.db"
+        return self.redis_url
 
     def get_celery_backend(self) -> str:
-        return self.celery_result_backend or self.redis_url
+        if self.celery_result_backend:
+            return self.celery_result_backend
+        if "sqlite" in str(self.database_url) and self.redis_url == "redis://redis:6379/0":
+            return "db+sqlite:///./celeryresults.db"
+        return self.redis_url
+
 
 
 @lru_cache
