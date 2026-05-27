@@ -16,7 +16,7 @@ export default function OverviewPage() {
     let cancelled = false;
 
     async function load() {
-      const [w, e] = await Promise.all([getWorkflows(tokenSafe), listExecutions(tokenSafe, 8)]);
+      const [w, e] = await Promise.all([getWorkflows(tokenSafe!), listExecutions(tokenSafe!, 8)]);
       if (!cancelled) {
         setWorkflows(w);
         setExecutions(e);
